@@ -34,8 +34,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
 
   return (
     <div className="edit-profile-container">
-      <header className="edit-header glass-panel rounded-header shadow-glow">
-        <button className="header-btn" onClick={() => onViewChange('settings')}>
+      <header className="edit-header rounded-header shadow-glow">
+        <button className="back-btn" onClick={() => onViewChange('settings')}>
           <ArrowLeft size={22} />
         </button>
         <div className="header-title-wrapper">
@@ -49,13 +49,13 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
           <div className="banner-edit" style={{ backgroundImage: `url(${formData.banner})` }}>
             <input type="file" id="edit-banner" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'banner')} />
             <button className="edit-img-overlay" onClick={() => document.getElementById('edit-banner')?.click()}>
-              <Camera />
+              <Camera size={26} />
             </button>
           </div>
           <div className="avatar-edit" style={{ backgroundImage: `url(${formData.avatar})` }}>
             <input type="file" id="edit-avatar" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'avatar')} />
             <button className="edit-img-overlay" onClick={() => document.getElementById('edit-avatar')?.click()}>
-              <Camera />
+              <Camera size={24} />
             </button>
           </div>
         </section>
@@ -85,6 +85,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
         .edit-profile-container {
           min-height: 100vh;
           background: var(--bg-grey);
+          font-family: 'Inter', sans-serif;
         }
         .edit-header {
           display: flex;
@@ -92,69 +93,66 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
           padding: 15px 20px;
           gap: 15px;
           z-index: 100;
-          color: white;
-          background: rgba(138, 136, 251, 0.4);
-          backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(255,255,255,0.1);
+          color: var(--text-primary);
+          background: white;
           position: sticky;
           top: 0;
+          border-bottom: 1px solid var(--border-color);
         }
         .rounded-header { border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; margin: 0 4px; }
-        .shadow-glow { box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
-        .header-btn { background: none; border: none; color: white; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; transition: background 0.2s; }
-        .header-btn:hover { background: rgba(255,255,255,0.1); }
-
+        .shadow-glow { box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+        
+        .back-btn { background: none; border: none; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; padding: 8px; border-radius: 50%; }
+        
         .header-title-wrapper { flex: 1; text-align: center; }
-        .edit-header h2 { font-size: 1.1rem; margin: 0; font-weight: 800; }
+        .edit-header h2 { font-size: 1.1rem; margin: 0; font-weight: 600; }
 
-        .edit-content { padding: var(--space-md); }
+        .edit-content { padding: 25px 20px; }
         
         .image-edit { position: relative; margin-bottom: 60px; }
         .banner-edit {
-          height: 160px;
+          height: 150px;
           background-color: var(--primary-light);
           background-size: cover;
           background-position: center;
-          border-radius: 25px;
+          border-radius: 20px;
           position: relative;
+          overflow: hidden;
         }
         .avatar-edit {
-          width: 110px;
-          height: 110px;
+          width: 100px;
+          height: 100px;
           background-color: white;
           background-size: cover;
           background-position: center;
           border-radius: 50%;
           border: 4px solid var(--bg-grey);
           position: absolute;
-          bottom: -55px;
+          bottom: -50px;
           left: 20px;
           z-index: 5;
-          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+        
         .edit-img-overlay {
           position: absolute;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.4);
+          background: rgba(0,0,0,0.25);
           border: none;
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
-          opacity: 0;
-          transition: opacity 0.3s;
+          opacity: 1; /* Always visible as requested */
           cursor: pointer;
           border-radius: inherit;
         }
-        .banner-edit:hover .edit-img-overlay, .avatar-edit:hover .edit-img-overlay { opacity: 1; }
         
-        .form-card { display: flex; flex-direction: column; gap: var(--space-md); margin-top: 20px; border-radius: 30px; }
+        .form-card { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
         .form-group { display: flex; flex-direction: column; gap: var(--space-xs); }
-        .form-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
+        .form-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
         
-        .input-base { border: 1px solid var(--border-color); padding: 14px; border-radius: 15px; outline: none; font-size: 1rem; transition: border-color 0.2s; }
-        .input-base:focus { border-color: var(--primary-color); }
-        textarea.input-base { min-height: 120px; resize: none; }
+        .input-base { border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); outline: none; font-size: 1rem; }
+        textarea.input-base { min-height: 100px; resize: none; }
       `}</style>
     </div>
   );
