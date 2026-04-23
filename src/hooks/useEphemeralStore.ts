@@ -91,7 +91,7 @@ export const useEphemeralStore = create<EphemeralState>()(
           set({ rooms });
           const currentActive = get().activeRoom;
           if (currentActive) {
-            const updated = rooms.find(r => r.id === currentActive.id);
+            const updated = rooms.find((r: Room) => r.id === currentActive.id);
             if (updated) {
               set({ activeRoom: updated });
             } else if (currentActive.type === 'adhoc') {
