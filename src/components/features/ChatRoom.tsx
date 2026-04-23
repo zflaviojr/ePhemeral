@@ -19,6 +19,10 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
   const [pendingImage, setPendingImage] = useState<string | null>(null);
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
   
+  // Exit animation state
+  const [localParticipants, setLocalParticipants] = useState<any[]>([]);
+  const [exitingIds, setExitingIds] = useState<Set<string>>(new Set());
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const hasAnnounced = useRef(false);
 
@@ -37,6 +41,31 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
   }, [socket?.id, activeRoom?.id, user?.id]);
 
   useEffect(() => {
+    if (!activeRoom) return;
+    const storeParts = activeRoom.participants || [];
+    const currentIds = new Set(storeParts.map(p => p.id));
+    const leftParticipants = localParticipants.filter(p => !currentIds.has(p.id) && !exitingIds.has(p.id));
+    
+    if (leftParticipants.length > 0) {
+      setExitingIds(prev => {
+        const next = new Set(prev);
+        leftParticipants.forEach(p => next.add(p.id));
+        return next;
+      });
+      setTimeout(() => {
+        setExitingIds(prev => {
+          const next = new Set(prev);
+          leftParticipants.forEach(p => next.delete(p.id));
+          return next;
+        });
+        setLocalParticipants(storeParts);
+      }, 1000);
+    } else {
+      setLocalParticipants(storeParts);
+    }
+  }, [activeRoom?.participants]);
+
+  useEffect(() => {
     if (isAutoScrollEnabled && scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
@@ -45,8 +74,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
   const handleScroll = () => {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-      const isAtBottom = scrollHeight - scrollTop - clientHeight < 60;
-      setIsAutoScrollEnabled(isAtBottom);
+      setIsAutoScrollEnabled(scrollHeight - scrollTop - clientHeight < 60);
     }
   };
 
@@ -106,7 +134,10 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
 
   if (!activeRoom) return null;
 
-  const participants = activeRoom.participants || [];
+  const displayParticipants = [
+    ...localParticipants,
+    ...localParticipants.filter(p => exitingIds.has(p.id))
+  ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
 
   return (
     <div className={`chat-container ${isLeaving ? 'animate-leave' : ''}`}>
@@ -129,10 +160,10 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
       <div className="chat-body">
         <aside className={`members-sidebar glass-panel ${showMembers ? 'open' : 'closed'}`}>
           <div className="sidebar-scroll">
-            {participants.map(p => (
+            {displayParticipants.map(p => (
               <div 
                 key={p.id} 
-                className={`member-avatar ${activeSenders[p.id] ? 'pulse-glow' : ''}`}
+                className={`member-avatar ${activeSenders[p.id] ? 'pulse-glow' : ''} ${exitingIds.has(p.id) ? 'member-exit' : ''}`}
                 style={{ 
                   backgroundImage: p.avatar ? `url(${p.avatar})` : 'none',
                   backgroundColor: p.avatar ? 'transparent' : 'white',
@@ -245,7 +276,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
         .creator-header-tag { font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 500; font-style: italic; }
 
         .chat-body { flex: 1; display: flex; min-height: 0; padding-top: 8px; }
-        .members-sidebar { width: 75px; background: rgba(255, 255, 255, 0.08); border-radius: 35px; margin: 0 10px 15px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; align-items: center; padding: 15px 0; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .members-sidebar { width: 75px; background: rgba(255, 255, 255, 0.08); border-radius: 35px; margin: 0 10px 15px; transition: width 0.3s; display: flex; flex-direction: column; align-items: center; padding: 15px 0; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
         .members-sidebar.closed { width: 0; padding: 0; margin: 0; overflow: hidden; opacity: 0; }
         
         .sidebar-scroll { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 0 10px; scrollbar-width: none; }
@@ -254,6 +285,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
         @keyframes pulseGlowAnimate {
           0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
           50% { box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.4); }
+        }
+        
+        .member-exit { animation: smokeEffectExit 1s forwards ease-in-out; }
+        @keyframes smokeEffectExit {
+          0% { opacity: 1; filter: blur(0); transform: scale(1); }
+          100% { opacity: 0; filter: blur(10px); transform: scale(1.5) translateY(-20px); }
         }
 
         .chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
@@ -294,7 +331,6 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
 
         .modal-popup-card { width: 100%; max-width: 320px; background: white; border-radius: 32px; padding: 30px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
         .modal-btns { display: flex; gap: 12px; margin-top: 25px; justify-content: center; }
-        .btn-danger { background: #ff4d4d !important; color: white !important; font-weight: 700; }
       `}</style>
     </div>
   );

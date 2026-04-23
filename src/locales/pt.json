@@ -11,7 +11,8 @@
     "send": "Enviar",
     "nearby": "Por perto",
     "distance_m": "{{count}}m de distância",
-    "distance_km": "{{count}}km de distância"
+    "distance_km": "{{count}}km de distância",
+    "leave": "Sair"
   },
   "auth": {
     "welcome": "Bem-vindo ao ePhemeral",

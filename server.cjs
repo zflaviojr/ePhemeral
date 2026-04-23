@@ -16,8 +16,7 @@ const io = new Server(server, {
 });
 
 let rooms = [
-  { id: 'fixed-1', name: 'Starbucks Central', type: 'fixed', distance: 150, isVerified: true, isOpen: true, participants: [] },
-  { id: 'adhoc-2', name: 'Almoço no Parque', type: 'adhoc', distance: 450, expiresAt: Date.now() + 3600000, participants: [] },
+  { id: 'fixed-1', name: 'Starbucks Central', type: 'fixed', distance: 150, isVerified: true, isOpen: true, participants: [], createdBy: 'Sistema' },
 ];
 
 let messages = {}; // roomId -> Message[]
@@ -25,7 +24,6 @@ let messages = {}; // roomId -> Message[]
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  // Send current rooms to the new client
   socket.emit('update-rooms', rooms);
 
   socket.on('create-room', (newRoom) => {
@@ -35,13 +33,14 @@ io.on('connection', (socket) => {
 
   socket.on('join-room', ({ roomId, user }) => {
     socket.join(roomId);
+    socket.userId = user.id; // Map userId to this socket
+    
     const room = rooms.find(r => r.id === roomId);
     if (room) {
       if (!room.participants.find(p => p.id === user.id)) {
         room.participants.push(user);
         io.emit('update-rooms', rooms);
       }
-      // Send message history
       socket.emit('room-history', messages[roomId] || []);
     }
   });
@@ -64,7 +63,6 @@ io.on('connection', (socket) => {
     if (roomIndex !== -1) {
       rooms[roomIndex].participants = rooms[roomIndex].participants.filter(p => p.id !== userId);
       
-      // Lógica de Efemeridade das Salas: Remover se vazia e ad-hoc
       if (rooms[roomIndex].type === 'adhoc' && rooms[roomIndex].participants.length === 0) {
         rooms.splice(roomIndex, 1);
         delete messages[roomId];
@@ -75,7 +73,37 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    const userId = socket.userId;
+    if (!userId) return;
+    
+    console.log('User disconnected:', userId);
+    
+    let changed = false;
+    // Remove user from all rooms they were in
+    rooms = rooms.map(room => {
+      if (room.participants.find(p => p.id === userId)) {
+        changed = true;
+        return {
+          ...room,
+          participants: room.participants.filter(p => p.id !== userId)
+        };
+      }
+      return room;
+    });
+
+    // Cleanup empty adhoc rooms
+    const initialCount = rooms.length;
+    rooms = rooms.filter(room => {
+      if (room.type === 'adhoc' && room.participants.length === 0) {
+        delete messages[room.id];
+        return false;
+      }
+      return true;
+    });
+
+    if (changed || rooms.length !== initialCount) {
+      io.emit('update-rooms', rooms);
+    }
   });
 });
 
