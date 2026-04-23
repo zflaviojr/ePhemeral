@@ -87,7 +87,19 @@ export const useEphemeralStore = create<EphemeralState>()(
         if (get().socket) return;
         const socket = io(SERVER_URL);
         
-        socket.on('update-rooms', (rooms) => set({ rooms }));
+        socket.on('update-rooms', (rooms) => {
+          set({ rooms });
+          const currentActive = get().activeRoom;
+          if (currentActive) {
+            const updated = rooms.find(r => r.id === currentActive.id);
+            if (updated) {
+              set({ activeRoom: updated });
+            } else if (currentActive.type === 'adhoc') {
+              // Ad-hoc room was closed/deleted, return to discovery
+              set({ activeRoom: null });
+            }
+          }
+        });
         socket.on('new-message', (msg) => set(state => ({ messages: [...state.messages, msg] })));
         socket.on('room-history', (history) => set({ messages: history }));
 
