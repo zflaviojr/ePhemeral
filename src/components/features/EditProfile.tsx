@@ -20,15 +20,42 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser(formData);
-    onViewChange('settings');
+    try {
+      updateUser(formData);
+      onViewChange('settings');
+    } catch (err) {
+      console.error('Erro ao salvar:', err);
+      alert('Erro ao salvar. A imagem pode ser muito grande.');
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'avatar' | 'banner') => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setFormData({...formData, [field]: reader.result as string});
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = field === 'banner' ? 800 : 300;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // Compressing to JPEG 70% quality
+          setFormData(prev => ({...prev, [field]: dataUrl}));
+        };
+        img.src = event.target?.result as string;
+      };
       reader.readAsDataURL(file);
     }
   };
@@ -47,7 +74,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
 
       <form className="edit-content" onSubmit={handleSubmit}>
         <section className="image-edit">
-          <div className="banner-edit" style={{ backgroundImage: `url(${formData.banner})` }}>
+          <div className="banner-edit shadow-sm" style={{ backgroundImage: `url(${formData.banner})` }}>
             <input type="file" id="edit-banner" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'banner')} />
             <button type="button" className="edit-img-overlay" onClick={() => document.getElementById('edit-banner')?.click()}>
               <Camera size={26} />
@@ -84,41 +111,24 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
       </form>
 
       <style>{`
-        .edit-profile-container { 
-          min-height: 100vh; 
-          min-height: 100dvh; 
-          background: var(--bg-grey); 
-          font-family: 'Inter', sans-serif; 
-          overflow-x: hidden;
-        }
+        .edit-profile-container { min-height: 100vh; min-height: 100dvh; background: var(--bg-grey); font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .edit-header { display: flex; align-items: center; padding: 15px 20px; gap: 15px; z-index: 100; position: sticky; top: 0; }
         .rounded-header { border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; margin: 0 4px; }
         .shadow-glow { box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        
-        .back-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
         .icon-main-color { color: var(--primary-dark); }
         .title-main-color { color: var(--primary-dark); font-size: 1.1rem; margin: 0; font-weight: 800; }
         .label-main-color { font-size: 0.9rem; color: var(--primary-dark); font-weight: 700; margin-left: 5px; opacity: 0.8; }
-
         .header-title-wrapper { flex: 1; text-align: center; }
         .edit-content { padding: 25px 20px; }
-        
         .image-edit { position: relative; margin-bottom: 60px; }
         .banner-edit { height: 150px; background-color: var(--primary-light); background-size: cover; background-position: center; border-radius: 20px; position: relative; overflow: hidden; }
         .avatar-edit { width: 100px; height: 100px; background-color: white; background-size: cover; background-position: center; border-radius: 50%; border: 4px solid var(--bg-grey); position: absolute; bottom: -50px; left: 20px; z-index: 5; }
-        
         .edit-img-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.25); border: none; color: white; display: flex; align-items: center; justify-content: center; opacity: 1; cursor: pointer; border-radius: inherit; }
-        
+        .back-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
         .form-card { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; border-radius: 30px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
         .input-base { border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); outline: none; font-size: 1rem; color: var(--text-main); background: white; -webkit-tap-highlight-color: transparent; }
-        .input-base:focus { border-color: var(--primary-color); }
         textarea.input-base { min-height: 100px; resize: none; }
-
-        @media (max-width: 600px) {
-           .edit-content { padding: 20px 15px; }
-           .banner-edit { height: 130px; }
-        }
       `}</style>
     </div>
   );
