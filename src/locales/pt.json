@@ -1,0 +1,69 @@
+{
+  "common": {
+    "app_name": "ePhemeral",
+    "back": "Voltar",
+    "next": "Próximo",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro",
+    "send": "Enviar",
+    "nearby": "Por perto",
+    "distance_m": "{{count}}m de distância",
+    "distance_km": "{{count}}km de distância"
+  },
+  "auth": {
+    "welcome": "Bem-vindo ao ePhemeral",
+    "subtitle": "Conecte-se com pessoas ao seu redor de forma efêmera.",
+    "phone_placeholder": "Número do telefone",
+    "identify": "Identificar",
+    "creating_profile": "Criando seu Perfil",
+    "basic_info": "Informações Básicas",
+    "name": "Nome",
+    "welcome_msg": "Mensagem de boas-vindas",
+    "photos": "Fotos de Perfil e Banner",
+    "upload_avatar": "Adicionar Foto de Perfil",
+    "upload_banner": "Adicionar Banner",
+    "finish": "Começar a Explorar"
+  },
+  "rooms": {
+    "discovery": "Descoberta",
+    "fixed_rooms": "Salas Fixas",
+    "adhoc_rooms": "Salas Temporárias",
+    "create_adhoc": "Criar Sala Temporária",
+    "no_rooms": "Nenhuma sala encontrada nesta localização.",
+    "open": "Aberta",
+    "closed": "Fechada",
+    "joining": "Entrando na sala...",
+    "participants": "Participantes",
+    "room_photo": "Foto da Sala",
+    "verification_pending": "Verificação Pendente",
+    "verified": "Proprietário Verificado"
+  },
+  "chat": {
+    "placeholder": "Digite uma mensagem...",
+    "ephemeral_note": "As mensagens desaparecem após 10 minutos.",
+    "private_note": "Esta conversa é particular e efêmera.",
+    "individual_chat": "Conversa Particular",
+    "block_user": "Bloquear Usuário",
+    "delete_contact": "Apagar Contato",
+    "gifs": "Enviando GIF (vídeo 5s)",
+    "user_left": "Usuário saiu da sala",
+    "leave_confirm_title": "Sair da sala?",
+    "leave_confirm_msg": "As mensagens são efêmeras e não estarão aqui quando você voltar."
+  },
+  "profile": {
+    "settings": "Configurações",
+    "edit_profile": "Editar Perfil",
+    "dark_mode": "Modo Escuro",
+    "language": "Idioma",
+    "owner_verification": "Verificação de Proprietário",
+    "upload_id": "Foto do Documento (ID)",
+    "upload_bill": "Comprovante de Endereço (Luz/Água)",
+    "verify_status": "Status da Verificação",
+    "logout": "Sair do App",
+    "logout_confirm_title": "Sair da conta?",
+    "logout_confirm_msg": "Você precisará se identificar novamente para acessar suas salas."
+  }
+}

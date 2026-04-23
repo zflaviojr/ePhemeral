@@ -1,0 +1,145 @@
+/* 
+   ePhemeral Design System
+   Padrões de Identidade Visual e Componentes
+   Este arquivo contém os tokens de design utilizados em todo o projeto.
+*/
+
+:root {
+  /* Cores - Tema Light */
+  --primary-color: #8A88FB; /* Lilás Principal */
+  --primary-light: #E0DFFE;
+  --primary-dark: #615EF0;
+  
+  --bg-white: #FFFFFF;
+  --bg-grey: #F5F7FB;
+  --bg-chat: #8A88FB; /* Lilás oficial para fundo do chat */
+  
+  --text-main: #1A1A1A;
+  --text-secondary: #757575;
+  --text-inverse: #FFFFFF;
+  
+  --border-color: #E0E0E0;
+  
+  /* Rounding (Bordas Arredondadas) */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  
+  /* Espaçamento */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  
+  /* Sombras */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Tokens de Dark Mode */
+[data-theme='dark'] {
+  --bg-white: #121212;
+  --bg-grey: #1E1E1E;
+  --bg-chat: #2A2A5E; /* Lilás mais escuro para o chat no modo dark */
+  
+  --text-main: #F5F5F5;
+  --text-secondary: #BDBDBD;
+  
+  --border-color: #333333;
+}
+
+/* Tipografia Fluida */
+html {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-grey);
+}
+
+/* Componentes Base Reutilizáveis (Padrões CSS) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.button-base {
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-lg);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.button-primary {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+  box-shadow: 0 4px 12px rgba(138, 136, 251, 0.3);
+}
+
+.button-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(138, 136, 251, 0.4);
+}
+
+.button-secondary {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.button-secondary:hover {
+  background-color: #d1cfff;
+  transform: translateY(-1px);
+}
+
+.button-danger {
+  background-color: #FF7E67;
+  color: var(--text-inverse);
+  box-shadow: 0 4px 12px rgba(255, 126, 103, 0.3);
+}
+
+.button-danger:hover {
+  background-color: #FF6B50;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 126, 103, 0.4);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card-base {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Animações Requiridas */
+@keyframes fadeOutBlur {
+  0% { opacity: 1; filter: blur(0); }
+  100% { opacity: 0; filter: blur(10px); }
+}
+
+.animate-leave {
+  animation: fadeOutBlur 0.8s forwards ease-out;
+}
