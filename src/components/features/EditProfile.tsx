@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEphemeralStore } from '../../hooks/useEphemeralStore';
 import { Button, Card } from '../base/Base';
-import { ArrowLeft, Save, Camera } from 'lucide-react';
+import { ArrowLeft, Camera } from 'lucide-react';
 
 interface EditProfileProps {
   onViewChange: (view: 'settings') => void;
@@ -34,14 +34,14 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
 
   return (
     <div className="edit-profile-container">
-      <header className="edit-header glass-panel">
-        <button className="back-btn" onClick={() => onViewChange('settings')}>
-          <ArrowLeft size={20} />
+      <header className="edit-header glass-panel rounded-header shadow-glow">
+        <button className="header-btn" onClick={() => onViewChange('settings')}>
+          <ArrowLeft size={22} />
         </button>
-        <h2>{t('profile.edit_profile')}</h2>
-        <button className="save-btn" onClick={handleSave}>
-          <Save size={20} />
-        </button>
+        <div className="header-title-wrapper">
+          <h2>{t('profile.edit_profile')}</h2>
+        </div>
+        <div style={{ width: 40 }}></div> {/* Spacer to center title if needed or balance layout */}
       </header>
 
       <div className="edit-content">
@@ -52,7 +52,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
               <Camera />
             </button>
           </div>
-          <div className="avatar-edit" style={{ backgroundImage: `url(${formData.avatar})` }}>
+          <div className="avatar-edit shadow-glow" style={{ backgroundImage: `url(${formData.avatar})` }}>
             <input type="file" id="edit-avatar" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'avatar')} />
             <button className="edit-img-overlay" onClick={() => document.getElementById('edit-avatar')?.click()}>
               <Camera />
@@ -60,7 +60,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
           </div>
         </section>
 
-        <Card className="form-card">
+        <Card className="form-card glass-panel">
           <div className="form-group">
             <label>{t('auth.name')}</label>
             <input 
@@ -82,63 +82,29 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
       </div>
 
       <style>{`
-        .edit-profile-container {
-          min-height: 100vh;
-          background: var(--bg-grey);
-        }
-        .edit-header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: var(--space-md);
-          background: var(--bg-white);
-          position: sticky;
-          top: 0;
-          z-index: 10;
-        }
-        .edit-header h2 { font-size: 1.1rem; margin: 0; }
-        .edit-content { padding: var(--space-md); }
+        .edit-profile-container { min-height: 100vh; background: var(--bg-chat); font-family: 'Inter', sans-serif; }
+        .edit-header { display: flex; align-items: center; padding: 15px 20px; gap: 15px; z-index: 100; color: white; background: rgba(138, 136, 251, 0.4); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .rounded-header { border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; margin: 0 4px; }
+        .shadow-glow { box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+        .header-btn { background: none; border: none; color: white; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; transition: background 0.2s; }
         
-        .image-edit { position: relative; margin-bottom: 60px; }
-        .banner-edit {
-          height: 150px;
-          background-color: var(--primary-light);
-          background-size: cover;
-          background-position: center;
-          border-radius: var(--radius-lg);
-          position: relative;
-        }
-        .avatar-edit {
-          width: 100px;
-          height: 100px;
-          background-color: white;
-          background-size: cover;
-          background-position: center;
-          border-radius: 50%;
-          border: 4px solid var(--bg-grey);
-          position: absolute;
-          bottom: -50px;
-          left: 20px;
-        }
-        .edit-img-overlay {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.3);
-          border: none;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 0.2s;
-          cursor: pointer;
-          border-radius: inherit;
-        }
+        .header-title-wrapper { flex: 1; text-align: center; }
+        .header-title-wrapper h2 { margin: 0; font-size: 1.1rem; font-weight: 800; }
+
+        .edit-content { padding: 25px 20px; }
+        
+        .image-edit { position: relative; margin-bottom: 70px; }
+        .banner-edit { height: 160px; background-color: rgba(255,255,255,0.1); background-size: cover; background-position: center; border-radius: 25px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .avatar-edit { width: 110px; height: 110px; background-color: white; background-size: cover; background-position: center; border-radius: 50%; border: 5px solid var(--bg-chat); position: absolute; bottom: -55px; left: 20px; z-index: 5; }
+        
+        .edit-img-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); border: none; color: white; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; cursor: pointer; border-radius: inherit; }
         .banner-edit:hover .edit-img-overlay, .avatar-edit:hover .edit-img-overlay { opacity: 1; }
         
-        .form-card { display: flex; flex-direction: column; gap: var(--space-md); }
-        .form-group { display: flex; flex-direction: column; gap: var(--space-xs); }
-        .form-group label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+        .form-card { gap: 20px; padding: 25px; border-radius: 30px; margin-top: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 700; margin-left: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-base { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 12px 18px; border-radius: 15px; outline: none; font-size: 1rem; transition: border-color 0.2s; }
+        .input-base:focus { border-color: var(--primary-color); }
         textarea.input-base { min-height: 100px; resize: none; }
       `}</style>
     </div>

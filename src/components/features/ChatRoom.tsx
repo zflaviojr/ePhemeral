@@ -157,30 +157,30 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
         </button>
       </header>
 
-      <div className="chat-body">
-        <aside className={`members-sidebar glass-panel ${showMembers ? 'open' : 'closed'}`}>
-          <div className="sidebar-scroll">
-            {displayParticipants.map(p => (
-              <div 
-                key={p.id} 
-                className={`member-avatar ${activeSenders[p.id] ? 'pulse-glow' : ''} ${exitingIds.has(p.id) ? 'member-exit' : ''}`}
-                style={{ 
-                  backgroundImage: p.avatar ? `url(${p.avatar})` : 'none',
-                  backgroundColor: p.avatar ? 'transparent' : 'white',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                } as any}
-                title={p.name}
-              >
-                {!p.avatar && p.name[0]}
-              </div>
-            ))}
-          </div>
-        </aside>
+      <div className="chat-body-v-layout">
+        <div className="chat-middle-section">
+          <aside className={`members-sidebar glass-panel ${showMembers ? 'open' : 'closed'}`}>
+            <div className="sidebar-scroll">
+              {displayParticipants.map(p => (
+                <div 
+                  key={p.id} 
+                  className={`member-avatar ${activeSenders[p.id] ? 'pulse-glow' : ''} ${exitingIds.has(p.id) ? 'member-exit' : ''}`}
+                  style={{ 
+                    backgroundImage: p.avatar ? `url(${p.avatar})` : 'none',
+                    backgroundColor: p.avatar ? 'transparent' : 'white',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                  } as any}
+                  title={p.name}
+                >
+                  {!p.avatar && p.name[0]}
+                </div>
+              ))}
+            </div>
+          </aside>
 
-        <div className="chat-main">
-          <div className="chat-messages" ref={scrollRef} onScroll={handleScroll}>
+          <div className="chat-messages-area" ref={scrollRef} onScroll={handleScroll}>
             <div className="ephemeral-alert-pill">
               <span className="info-icon-wrapper"><Info size={12} /></span>
               <span>{t('chat.ephemeral_note')}</span>
@@ -213,36 +213,36 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
               );
             })}
           </div>
-
-          {pendingImage && (
-            <div className="image-preview-stage glass-panel shadow-glow">
-              <div className="preview-container">
-                <img src={pendingImage} alt="Pending" />
-                <button className="remove-preview-btn" onClick={() => setPendingImage(null)}>
-                  <X size={18} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          <footer className="chat-footer glass-panel">
-            <input type="file" id="chat-file" hidden accept="image/*" onChange={handleFileChange} />
-            <button className="footer-action" onClick={() => document.getElementById('chat-file')?.click()}>
-              <ImageIcon size={22} />
-            </button>
-            <input 
-              type="text" 
-              className="chat-input-pill"
-              placeholder={t('chat.placeholder')}
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            />
-            <button className="send-action-btn" onClick={handleSend} disabled={!inputText.trim() && !pendingImage}>
-              <Send size={22} />
-            </button>
-          </footer>
         </div>
+
+        {pendingImage && (
+          <div className="image-preview-stage-full glass-panel shadow-glow">
+            <div className="preview-container">
+              <img src={pendingImage} alt="Pending" />
+              <button className="remove-preview-btn" onClick={() => setPendingImage(null)}>
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <footer className="chat-footer-full glass-panel">
+          <input type="file" id="chat-file" hidden accept="image/*" onChange={handleFileChange} />
+          <button className="footer-action" onClick={() => document.getElementById('chat-file')?.click()}>
+            <ImageIcon size={22} />
+          </button>
+          <input 
+            type="text" 
+            className="chat-input-pill"
+            placeholder={t('chat.placeholder')}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          />
+          <button className="send-action-btn" onClick={handleSend} disabled={!inputText.trim() && !pendingImage}>
+            <Send size={22} />
+          </button>
+        </footer>
       </div>
 
       {showLeaveConfirm && (
@@ -275,11 +275,13 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
         .room-type-tag { font-size: 0.6rem; background: rgba(255,255,255,0.2); padding: 1px 8px; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
         .creator-header-tag { font-size: 0.65rem; color: rgba(255,255,255,0.8); font-weight: 500; font-style: italic; }
 
-        .chat-body { flex: 1; display: flex; min-height: 0; padding-top: 8px; }
-        .members-sidebar { width: 75px; background: rgba(255, 255, 255, 0.08); border-radius: 35px; margin: 0 10px 15px; transition: width 0.3s; display: flex; flex-direction: column; align-items: center; padding: 15px 0; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .chat-body-v-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+        .chat-middle-section { flex: 1; display: flex; min-height: 0; }
+
+        .members-sidebar { width: 75px; background: rgba(255, 255, 255, 0.08); border-top-right-radius: 35px; border-bottom-right-radius: 35px; margin: 5px 10px 5px 0; transition: width 0.3s; display: flex; flex-direction: column; align-items: center; padding: 15px 0; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-left: none; }
         .members-sidebar.closed { width: 0; padding: 0; margin: 0; overflow: hidden; opacity: 0; }
         
-        .sidebar-scroll { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 0 10px; scrollbar-width: none; }
+        .sidebar-scroll { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 0 10px; scrollbar-width: none; height: 100%; }
         .member-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; color: var(--primary-dark); background: white; transition: all 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.5); }
         .pulse-glow { animation: pulseGlowAnimate 2s infinite ease-in-out; }
         @keyframes pulseGlowAnimate {
@@ -293,8 +295,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
           100% { opacity: 0; filter: blur(10px); transform: scale(1.5) translateY(-20px); }
         }
 
-        .chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-messages-area { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         
         .ephemeral-alert-pill { align-self: center; background: rgba(0,0,0,0.2); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.7rem; display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-weight: 500; }
         .system-msg-center { align-self: center; text-align: center; margin-bottom: 5px; }
@@ -319,12 +320,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ onViewChange }) => {
         
         .msg-media img { max-width: 100%; border-radius: 12px; display: block; margin-bottom: 8px; }
 
-        .image-preview-stage { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); z-index: 100; padding: 10px; border-radius: 20px; }
-        .preview-container { position: relative; max-height: 200px; }
-        .preview-container img { max-height: 200px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        .image-preview-stage-full { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); z-index: 100; padding: 10px; border-radius: 20px; }
+        .preview-container { position: relative; max-height: 180px; }
+        .preview-container img { max-height: 180px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
         .remove-preview-btn { position: absolute; top: -10px; right: -10px; background: white; border: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary-dark); cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
-        .chat-footer { padding: 12px 15px; display: flex; gap: 10px; align-items: center; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 25px rgba(0,0,0,0.05); z-index: 10; }
+        .chat-footer-full { padding: 12px 15px; display: flex; gap: 10px; align-items: center; background: white; border-top-left-radius: 30px; border-top-right-radius: 30px; box-shadow: 0 -5px 25px rgba(0,0,0,0.05); z-index: 10; width: 100%; }
         .chat-input-pill { flex: 1; border: none; background: #f0f2f5; padding: 12px 18px; border-radius: 25px; outline: none; font-size: 1rem; color: #333 !important; font-weight: 500; }
         .footer-action, .send-action-btn { background: none; border: none; color: var(--primary-color); cursor: pointer; padding: 8px; transition: transform 0.2s; }
         .send-action-btn:disabled { opacity: 0.3; }
