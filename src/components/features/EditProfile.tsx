@@ -18,7 +18,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
     banner: user?.banner || ''
   });
 
-  const handleSave = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     updateUser(formData);
     onViewChange('settings');
   };
@@ -35,7 +36,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
   return (
     <div className="edit-profile-container">
       <header className="edit-header glass-panel rounded-header shadow-glow">
-        <button className="back-btn" onClick={() => onViewChange('settings')}>
+        <button type="button" className="back-btn" onClick={() => onViewChange('settings')}>
           <ArrowLeft size={22} className="icon-main-color" />
         </button>
         <div className="header-title-wrapper">
@@ -44,17 +45,17 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
         <div style={{ width: 40 }}></div>
       </header>
 
-      <div className="edit-content">
+      <form className="edit-content" onSubmit={handleSubmit}>
         <section className="image-edit">
           <div className="banner-edit" style={{ backgroundImage: `url(${formData.banner})` }}>
             <input type="file" id="edit-banner" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'banner')} />
-            <button className="edit-img-overlay" onClick={() => document.getElementById('edit-banner')?.click()}>
+            <button type="button" className="edit-img-overlay" onClick={() => document.getElementById('edit-banner')?.click()}>
               <Camera size={26} />
             </button>
           </div>
           <div className="avatar-edit shadow-md" style={{ backgroundImage: `url(${formData.avatar})` }}>
             <input type="file" id="edit-avatar" hidden accept="image/*" onChange={(e) => handleFileChange(e, 'avatar')} />
-            <button className="edit-img-overlay" onClick={() => document.getElementById('edit-avatar')?.click()}>
+            <button type="button" className="edit-img-overlay" onClick={() => document.getElementById('edit-avatar')?.click()}>
               <Camera size={24} />
             </button>
           </div>
@@ -66,6 +67,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
             <input 
               className="input-base"
               value={formData.name}
+              required
               onChange={(e) => setFormData({...formData, name: e.target.value})}
             />
           </div>
@@ -77,17 +79,23 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
               onChange={(e) => setFormData({...formData, welcomeMessage: e.target.value})}
             />
           </div>
-          <Button onClick={handleSave} fluid>{t('common.save')}</Button>
+          <Button type="submit" fluid>{t('common.save')}</Button>
         </Card>
-      </div>
+      </form>
 
       <style>{`
-        .edit-profile-container { min-height: 100vh; background: var(--bg-grey); font-family: 'Inter', sans-serif; }
+        .edit-profile-container { 
+          min-height: 100vh; 
+          min-height: 100dvh; 
+          background: var(--bg-grey); 
+          font-family: 'Inter', sans-serif; 
+          overflow-x: hidden;
+        }
         .edit-header { display: flex; align-items: center; padding: 15px 20px; gap: 15px; z-index: 100; position: sticky; top: 0; }
         .rounded-header { border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; margin: 0 4px; }
         .shadow-glow { box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        .back-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; }
+        .back-btn { background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 8px; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
         .icon-main-color { color: var(--primary-dark); }
         .title-main-color { color: var(--primary-dark); font-size: 1.1rem; margin: 0; font-weight: 800; }
         .label-main-color { font-size: 0.9rem; color: var(--primary-dark); font-weight: 700; margin-left: 5px; opacity: 0.8; }
@@ -103,8 +111,14 @@ export const EditProfile: React.FC<EditProfileProps> = ({ onViewChange }) => {
         
         .form-card { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; border-radius: 30px; }
         .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .input-base { border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); outline: none; font-size: 1rem; color: var(--text-main); }
+        .input-base { border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-md); outline: none; font-size: 1rem; color: var(--text-main); background: white; -webkit-tap-highlight-color: transparent; }
+        .input-base:focus { border-color: var(--primary-color); }
         textarea.input-base { min-height: 100px; resize: none; }
+
+        @media (max-width: 600px) {
+           .edit-content { padding: 20px 15px; }
+           .banner-edit { height: 130px; }
+        }
       `}</style>
     </div>
   );
