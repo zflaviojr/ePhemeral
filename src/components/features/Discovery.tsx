@@ -208,10 +208,12 @@ export const Discovery: React.FC<DiscoveryProps> = ({ onViewChange }) => {
         .add-room-btn { background: none; border: none; color: var(--primary-color); cursor: pointer; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .create-room-modal-card { width: 100%; max-width: 360px; background: white; border-radius: 32px; padding: 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-        .close-btn { background: none; border: none; color: #999; cursor: pointer; }
-        .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--primary-dark); font-weight: 800; }
-        .modal-body { display: flex; flex-direction: column; gap: 15px; }
+        .create-room-modal-card { width: 100%; max-width: 360px; background: white; border-radius: 32px; padding: 35px 30px 30px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.05); border: none; color: #999; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .close-btn:hover { background: rgba(0,0,0,0.1); color: var(--primary-dark); }
+        .modal-header { margin-bottom: 20px; padding-right: 30px; }
+        .modal-header h3 { margin: 0; font-size: 1.3rem; color: var(--primary-dark); font-weight: 800; line-height: 1.2; }
+        .modal-body { display: flex; flex-direction: column; gap: 20px; }
       `}</style>
     </div>
   );
